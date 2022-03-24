@@ -7,6 +7,7 @@ import rightImg from "../images/covid_right.png";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Modal from "../components/Modal";
 
 const Home = () => {
   const API_KEY = process.env.REACT_APP_NEXON_API_KEY;
@@ -14,30 +15,40 @@ const Home = () => {
   const [searchName, setSearchName] = useState("");
 
   const handleSearchName = async () => {
-    try {
-      const response = await axios.get(
-        `https://cors-anywhere.herokuapp.com/https://api.nexon.co.kr/kart/v1.0/users/nickname/${searchName}`, {
-          headers: {
-            Authorization: API_KEY
-          }
-        }
-      )
-
-      const userAccessId = response.data.accessId;
-      
-      const matchdata = await axios.get(
-          `https://cors-anywhere.herokuapp.com/https://api.nexon.co.kr/kart/v1.0/users/${userAccessId}/matches?start_date=&end_date= &offset=0&limit=10&match_types=`, {
-            headers: {
-              Authorization: API_KEY
+    if (searchName === "") {
+      alert("아이디를 입력해주세요");
+      setIsOpen(false);
+    } else {
+        try {
+          const response = await axios.get(
+            `https://cors-anywhere.herokuapp.com/https://api.nexon.co.kr/kart/v1.0/users/nickname/${searchName}`, {
+              headers: {
+                Authorization: API_KEY
+              }
             }
-          }
-      )
-      console.log(matchdata.data.matches[0].matches, "matchdata");
-      navigate(`/${response.data.name}`);
-    } catch (err) {
-      console.log(err, "error");
+          )
+    
+          const userAccessId = response.data.accessId;
+          
+          const matchdata = await axios.get(
+              `https://cors-anywhere.herokuapp.com/https://api.nexon.co.kr/kart/v1.0/users/${userAccessId}/matches?start_date=&end_date= &offset=0&limit=10&match_types=`, {
+                headers: {
+                  Authorization: API_KEY
+                }
+              }
+          )
+          console.log(matchdata.data.matches[0].matches, "matchdata");
+          navigate(`/${response.data.name}`);
+        } catch (err) {
+          console.log(err, "error");
+        }
     }
   }
+
+  const [isOpen, setIsOpen] = useState(false);
+  const openModalHandler = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <>
@@ -57,9 +68,17 @@ const Home = () => {
             onKeyUp={(e) => {
               if (e.key === "Enter") {
                 handleSearchName();
+                openModalHandler();
               }
             }}
           />
+          {/* {
+            isOpen ?
+            <Modal 
+              className={isOpen ? "visible" : "unvisible"} 
+              open={isOpen} onClose={() => setIsOpen(false)} /> :
+            <LoadingIndicator />
+          } */}
         <RightCovidImg src={rightImg} />
       </HomeBox>
     </>
@@ -70,6 +89,7 @@ const HomeBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  z-index: 0;
 `
 const HomeBackgroundImg = styled.img`
   width: 100%;
