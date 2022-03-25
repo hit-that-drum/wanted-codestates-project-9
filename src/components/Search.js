@@ -2,21 +2,26 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { BiSearch } from "react-icons/bi"
 import axios from "axios";
+import { useDispatch, useSelector } from 'react-redux';
+import { usernameSet, finishMatchPerSet, winMatchPerSet, retiredMatchPerSet, matchRankFiftySet, matchRankAllSet } from "../redux/slice";
 
 
 const SearchBar = () => {
   const API_KEY = process.env.REACT_APP_NEXON_API_KEY;
   const [searchName, setSearchName] = useState("");
-  const [userData, setUserData] = useState(
-    {
-      username: "",
-      finishMatchPer: 0,
-      winMatchPer: 0,
-      retiredMatchPer: 0,
-      matchRankFifty: 0,
-      matchRankAll: 0
-    }
-  )
+  // const [userData, setUserData] = useState(
+  //   {
+  //     username: "",
+  //     finishMatchPer: 0,
+  //     winMatchPer: 0,
+  //     retiredMatchPer: 0,
+  //     matchRankFifty: 0,
+  //     matchRankAll: 0
+  //   }
+  // )
+  
+  const { userData } = useSelector((state) => state.userData);
+  const dispatch = useDispatch();
 
   const handleSearchName = async () => {
     if (searchName === "") {
@@ -85,14 +90,26 @@ const SearchBar = () => {
         let matchRankAll = matchRankAllSum / ( allMatchLength - matchRetiredSum );
         matchRankAll = Number(matchRankAll.toFixed(2));
 
-        setUserData({
-          username: searchName,
-          finishMatchPer: finishMatchPer,
-          winMatchPer: winMatchPer,
-          retiredMatchPer: retiredMatchPer,
-          matchRankFifty: matchRankFifty,
-          matchRankAll: matchRankAll
-        })
+        // setUserData({
+        //   username: searchName,
+        //   finishMatchPer: finishMatchPer,
+        //   winMatchPer: winMatchPer,
+        //   retiredMatchPer: retiredMatchPer,
+        //   matchRankFifty: matchRankFifty,
+        //   matchRankAll: matchRankAll
+        // })
+
+        const setUserData = () => {
+          dispatch(usernameSet(searchName));
+          dispatch(finishMatchPerSet(finishMatchPer));
+          dispatch(winMatchPerSet(winMatchPer));
+          dispatch(retiredMatchPerSet(retiredMatchPer));
+          dispatch(matchRankFiftySet(matchRankFifty));
+          dispatch(matchRankAllSet(matchRankAll));
+        }
+
+        setUserData();
+
 
         } catch (err) {
           console.log(err, "error");
@@ -100,9 +117,9 @@ const SearchBar = () => {
     }
   }
 
-  useEffect(() => {
-    console.log(userData, "userData")
-  }, [userData]);
+  // useEffect(() => {
+  //   console.log(userData, "userData")
+  // }, [userData]);
 
   return (
     <SearchWrapper>

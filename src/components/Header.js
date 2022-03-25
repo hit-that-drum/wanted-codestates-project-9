@@ -10,41 +10,16 @@ import axios from "axios";
 
 const Header = () => {
   const API_KEY = process.env.REACT_APP_NEXON_API_KEY;
-  const [currentTab, setCurrentTab] = useState(0);
+  // const [currentTab, setCurrentTab] = useState(0);
 
-  const tabContent = [
-    { name: "HOME", content: "This is HOME" },
-    { name: "RANKING", content: "This is RANKING" }
-  ]
+  // const tabContent = [
+  //   { name: "HOME", content: "This is HOME" },
+  //   { name: "RANKING", content: "This is RANKING" }
+  // ]
 
-  const selectTabHandler = (index) => {
-    setCurrentTab(index);
-  }
-
-  const handleGetData = async () => {
-    try {
-      const response = await axios.get(
-        `https://cors-anywhere.herokuapp.com/https://api.nexon.co.kr/kart/v1.0/users/nickname/BBEESSTT`, {
-          headers: {
-            Authorization: API_KEY
-          }
-        }
-      )
-
-      const userAccessId = response.data.accessId;
-      
-      const matchdata = await axios.get(
-          `https://cors-anywhere.herokuapp.com/https://api.nexon.co.kr/kart/v1.0/users/${userAccessId}/matches?start_date=&end_date= &offset=0&limit=10&match_types=`, {
-            headers: {
-              Authorization: API_KEY
-            }
-          }
-      )
-      console.log(matchdata.data.matches[0].matches, "matchdata");
-    } catch (err) {
-      console.log(err, "error");
-    }
-  }
+  // const selectTabHandler = (index) => {
+  //   setCurrentTab(index);
+  // }
 
   return (
     <>
@@ -56,7 +31,7 @@ const Header = () => {
       </KartHomepageBtn>
     </LogoBox>
     <LineBox>
-      {tabContent.map((ele, index) =>{
+      {/* {tabContent.map((ele, index) =>{
         return (
           <div 
             key={index}
@@ -65,11 +40,12 @@ const Header = () => {
             {ele.name}
           </div>
         )
-      } )}
+      } )} */}
+      <div>HOME</div>
+      <div>RANKING</div>
       <SearchBar />
     </LineBox>
-      <div>{tabContent[currentTab].content}</div>
-      <div onClick={handleGetData}>click</div>
+      {/* <div>{tabContent[currentTab].content}</div> */}
       </>
   );
 };
